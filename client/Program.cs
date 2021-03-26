@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text;
-
+using System.Diagnostics;
 
 namespace client
 {
@@ -24,16 +24,65 @@ namespace client
                     Console.WriteLine("Paramètre inconnu !");
                 }
             }
+            
+            //await GetHttpResult();
 
+            //StartSubProcess();
 
-            DisplayFolderDate(@"C:\Program Files\Internet Explorer");
-            await GetHttpResult();
+            await StatusToWebsite("https://to.be.defined/status/record.php");
         }
 
-        static void DisplayFolderDate(string folderPath)
+        static DateTime GetFolderDate(string folderPath)
         {
             DateTime creation = File.GetCreationTime(folderPath);
-            Console.WriteLine(creation);
+            return creation;
+        }
+
+        static void StartSubProcess()
+        {
+            Process process = new Process();
+            // Configure the process using the StartInfo properties.
+            process.StartInfo.FileName = "cmd.exe";
+            process.StartInfo.Arguments = "-n";
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
+            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.RedirectStandardError = true;
+            process.StartInfo = processStartInfo;
+            process.Start();
+            process.WaitForExit();// Waits here for the process to exit.
+        }
+
+
+        static async System.Threading.Tasks.Task StatusToWebsite(String websiteUrl)
+        {
+            Console.WriteLine("Sending status info to " + websiteUrl);
+
+            object data = new
+            {
+                cn = System.Environment.MachineName,
+                fcn = System.Net.Dns.GetHostName(),
+                d = DateTime.Now,
+                utc = DateTime.UtcNow,
+                key = "kksdjfh OMJDFLi jdrgku hd kjfngd kjn",
+                v=1,
+                s = new {
+                    setupD = GetFolderDate(@"C:\Program Files\Internet Explorer")
+                }
+            };
+
+            var json = JsonSerializer.Serialize(data);
+            var stringContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+            HttpResponseMessage response = await http.PostAsync(websiteUrl, stringContent);
+            response.EnsureSuccessStatusCode();
+            string responseBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(responseBody);
+
+            /**
+            TODO : completer avec une récupération de la clé pour la sauver en local */
+
+            StatusResult jsonResult = JsonSerializer.Deserialize<StatusResult>(responseBody);
+            Console.WriteLine("Status result : "+jsonResult.statusMessage);
         }
 
         static async System.Threading.Tasks.Task RegisterToWebsite(String websiteUrl)
@@ -60,9 +109,11 @@ namespace client
             string responseBody = await response.Content.ReadAsStringAsync();
             Console.WriteLine(responseBody);
 
-            /*var jsonResult = JsonSerializer.Deserialize<WeatherForecast>(responseBody);
-            var toto = jsonResult.toto;*/
+            /**
+            TODO : completer avec une récupération de la clé pour la sauver en local
 
+            var jsonResult = JsonSerializer.Deserialize<WeatherForecast>(responseBody);
+            var toto = jsonResult.toto;*/
         }
 
         static async System.Threading.Tasks.Task GetHttpResult()
