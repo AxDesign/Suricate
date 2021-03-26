@@ -41,20 +41,6 @@ function ValidPassword(string $password): bool{
 
     return true;
 }
-
-function ExistEmail(string $email): bool{
-    global $bdd;
-
-    $req = $bdd->prepare('SELECT * FROM users WHERE user_email = ?');
-    $req->execute(array($email));
-
-    if($req->rowCount() == 1){
-        return true;
-    } else {
-        return false;
-    }
-}
-
 function RegisterUser(string $email, string $name, string $password): void{
     global $bdd;
 
@@ -68,7 +54,7 @@ function RegisterUser(string $email, string $name, string $password): void{
     ));
 }
 
-function ConnexionUser(string $email, string $password): bool{
+function ConnexionUser(string $email, string $password, string $name, string $key): bool{
     global $bdd,
             $errorPassword;
 
@@ -78,6 +64,7 @@ function ConnexionUser(string $email, string $password): bool{
     if($req->rowCount() == 1){
         $dataUser = $req->fetch();
         if(password_verify($password, $dataUser['user_password'])){
+            SaveComputer($name, $key);
             return true;
         } else {
             $errorPassword = "Le mot de passe ne correspond pas";
@@ -86,6 +73,34 @@ function ConnexionUser(string $email, string $password): bool{
     } else {
         return false;
     }
+}
+
+function ChangePassword(string $email, string $password): void{
+    global $bdd;
+    
+    $password = password_hash($password, PASSWORD_DEFAULT);
+
+    $req = $bdd->prepare('UPDATE users SET user_password = ? WHERE user_email = ?');
+    $req->execute(array($password, $email));
+}
+
+function GenerateComputerKey(string $email, string $computerName): string{
+    $date = time();
+    $ip = $_SERVER['REMOTE_ADDR'];
+
+    $stringKey = $email . $computerName . $date . $ip;
+
+    return hash("sha256", $stringKey);
+}
+
+function SaveComputer(string $name, string $key): void{
+    global $bdd;
+
+    $req = $bdd->prepare('INSERT INTO computers(computer_name, computer_key) VALUES(:name, :key)');
+    $req->execute(array(
+        'name' => $name,
+        'key' => $key
+    ));
 }
 
 //Récupérer l'email

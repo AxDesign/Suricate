@@ -4,9 +4,7 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sign Up | WAYH</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" />
-        <link rel="stylesheet" href="./views/css/general.css">
+        <title>Login</title>
     </head>
     <body class="login">
         <main class="login__main">
@@ -14,7 +12,7 @@
             
             <form method="post" class="login__main__form">
                 <!--Email-->
-                <label for="userEmail">Ton nom</label>
+                <label for="userEmail">Ton email</label>
                 <input type="email" name="userEmail">
                 <?php if(isset($errorEmail) && !empty($errorEmail)){ ?>
                     <p class="errorForm"><?=$errorEmail?></p>
@@ -25,6 +23,14 @@
                 <?php if(isset($errorPassword) && !empty($errorPassword)){ ?>
                     <p class="errorForm"><?=$errorPassword?></p>
                 <?php } ?>
+
+                <label for="computerName">Ton nom d'ordinateur</label>
+                <input type="text" name="computerName">
+                <?php if(isset($errorComputerName) && !empty($errorComputerName)){ ?>
+                    <p class="errorForm"><?=$errorComputerName?></p>
+                <?php } ?>
+
+                <a href="resetPassword.php">Première connexion / Mot de passe perdu</a>
 
                 <button type="submit">Se connecter</button>
             </form>
