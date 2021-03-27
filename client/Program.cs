@@ -64,7 +64,7 @@ namespace client
                 fcn = System.Net.Dns.GetHostName(),
                 d = DateTime.Now,
                 utc = DateTime.UtcNow,
-                key = "kksdjfh OMJDFLi jdrgku hd kjfngd kjn",
+                key = "ff31035979b231cfca404bc4494152c705840804fb9bbe0de3c55c6453b3e174",
                 v=1,
                 s = new {
                     setupD = GetFolderDate(@"C:\Program Files\Internet Explorer")
@@ -81,8 +81,9 @@ namespace client
             /**
             TODO : completer avec une récupération de la clé pour la sauver en local */
 
-            /*StatusResult jsonResult = JsonSerializer.Deserialize<StatusResult>(responseBody);
-            Console.WriteLine("Status result : "+jsonResult.statusMessage);*/
+            StatusResult jsonResult = JsonSerializer.Deserialize<StatusResult>(responseBody);
+            Console.WriteLine("Status code : "+jsonResult.statusCode);
+            Console.WriteLine("Status result : "+jsonResult.statusMessage);
         }
 
         static async System.Threading.Tasks.Task RegisterToWebsite(String websiteUrl)
