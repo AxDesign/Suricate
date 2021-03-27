@@ -29,7 +29,7 @@ namespace client
 
             //StartSubProcess();
 
-            await StatusToWebsite("https://to.be.defined/status/record.php");
+            await StatusToWebsite("http://suricate.axdesign.fr/data.php");
         }
 
         static DateTime GetFolderDate(string folderPath)
@@ -81,8 +81,8 @@ namespace client
             /**
             TODO : completer avec une récupération de la clé pour la sauver en local */
 
-            StatusResult jsonResult = JsonSerializer.Deserialize<StatusResult>(responseBody);
-            Console.WriteLine("Status result : "+jsonResult.statusMessage);
+            /*StatusResult jsonResult = JsonSerializer.Deserialize<StatusResult>(responseBody);
+            Console.WriteLine("Status result : "+jsonResult.statusMessage);*/
         }
 
         static async System.Threading.Tasks.Task RegisterToWebsite(String websiteUrl)
