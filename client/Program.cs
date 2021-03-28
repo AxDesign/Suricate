@@ -11,25 +11,21 @@ namespace client
     {
         static readonly HttpClient http = new HttpClient();
 
-        static async System.Threading.Tasks.Task Main(string[] args)
+        //static async System.Threading.Tasks.Task Main(string[] args)
+        static void Main(string[] args)
         {
-            if (args.Length != 0)
-            {
-                if ("register".Equals(args[0]))
-                {
-                    await RegisterToWebsite(args[1]);
-                }
-                else
-                {
-                    Console.WriteLine("Paramètre inconnu !");
-                }
-            }
-            
-            //await GetHttpResult();
-
-            //StartSubProcess();
-
-            await StatusToWebsite("http://suricate.axdesign.fr/data.php");
+            // if (args.Length != 0)
+            // {
+            //     if ("register".Equals(args[0]))
+            //     {
+            //         await RegisterToWebsite(args[1]);
+            //     }
+            //     else
+            //     {
+            //         Console.WriteLine("Paramètre inconnu !");
+            //     }
+            // }
+           // await StatusToWebsite("http://suricate.axdesign.fr/data.php");
         }
 
         static DateTime GetFolderDate(string folderPath)
@@ -38,19 +34,26 @@ namespace client
             return creation;
         }
 
-        static void StartSubProcess()
+        static string GetSubProcessResult(string commande)
         {
             Process process = new Process();
-            // Configure the process using the StartInfo properties.
             process.StartInfo.FileName = "cmd.exe";
-            process.StartInfo.Arguments = "-n";
+            
+            process.StartInfo.Arguments = "/C " + commande;
             process.StartInfo.WindowStyle = ProcessWindowStyle.Normal;
-            ProcessStartInfo processStartInfo = new ProcessStartInfo();
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.RedirectStandardError = true;
-            process.StartInfo = processStartInfo;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
             process.Start();
-            process.WaitForExit();// Waits here for the process to exit.
+
+            StreamReader reader = process.StandardOutput;
+            string output = reader.ReadToEnd();
+
+            process.WaitForExit();
+            int index = output.IndexOf(":");
+            output = output.Substring(index+1).Trim();
+
+            return output;
+
         }
 
 
@@ -61,13 +64,14 @@ namespace client
             object data = new
             {
                 cn = System.Environment.MachineName,
-                fcn = System.Net.Dns.GetHostName(),
                 d = DateTime.Now,
                 utc = DateTime.UtcNow,
                 key = "ff31035979b231cfca404bc4494152c705840804fb9bbe0de3c55c6453b3e174",
                 v=1,
                 s = new {
-                    setupD = GetFolderDate(@"C:\Program Files\Internet Explorer")
+                    ieFolderD = GetFolderDate(@"C:\Program Files\Internet Explorer"),
+                    setupD = GetSubProcessResult("systeminfo | find /i \"installation\""),
+                    startD = GetSubProcessResult("systeminfo | find /i \"démarrage\"")
                 }
             };
 
@@ -117,24 +121,5 @@ namespace client
             var toto = jsonResult.toto;*/
         }
 
-        static async System.Threading.Tasks.Task GetHttpResult()
-        {
-            try
-            {
-                /*HttpResponseMessage response = await http.GetAsync("http://www.contoso.com/"); // ou PutSync ou PatchAsync pour Put et Post http methods !!!
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();*/
-                // Above three lines can be replaced with new helper method below
-                string responseBody = await http.GetStringAsync("http://www.contoso.com/");
-                Console.WriteLine(responseBody);
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine("\nException Caught!");
-                Console.WriteLine("Message :{0} ", e.Message);
-            }
-
-
-        }
     }
 }
