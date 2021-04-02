@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Win32;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
@@ -71,7 +72,8 @@ namespace client
                 s = new {
                     ieFolderD = GetFolderDate(@"C:\Program Files\Internet Explorer"),
                     setupD = GetSubProcessResult("systeminfo | find /i \"installation\""),
-                    startD = GetSubProcessResult("systeminfo | find /i \"démarrage\"")
+                    startD = GetSubProcessResult("systeminfo | find /i \"démarrage\""),
+                    adobeLogLevel = Registry.GetValue("HKEY_CURRENT_USER\\SOFTWARE\\Adobe\\CSXS.10", "LogLevel", -1)
                 }
             };
 
