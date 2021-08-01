@@ -24,3 +24,17 @@ function ExistKey(string $key): bool{
         return false;
     }
 }
+
+function ListAllPc()
+{
+    global $bdd;
+
+    $req = $bdd->prepare('SELECT * FROM computers');
+    $req->execute();
+    $pc = [];
+    while($row = $req->fetch()){
+        $pc[] = $row['computer_name'];
+    }
+
+    return $pc;
+}

@@ -102,14 +102,3 @@ function SaveComputer(string $name, string $key): void{
         'key' => $key
     ));
 }
-
-//Récupérer l'email
-//Vérifier si il est valide
-
-//Vérifier si il existe déjà dans la base de donnée
-
-//Si oui rediriger vers la page Login
-//Sinon rediriger vers la page Sign Out
-
-//Renvoyer l'email a la page suivante 
-
