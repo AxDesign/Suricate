@@ -11,13 +11,20 @@
         <thead>
             <tr>
                 <th>Nom</th>
+                <th>Dernière Date</th>
+                <th>Nb Status</th>
             </tr>
         </thead>
         <tbody>
             <?php
-            foreach ($pc as $k) { ?>
+            foreach ($pc as $k => $v) { ?>
                 <tr>
                     <td><?=$k?></td>
+                    <?php
+                        foreach($v as $item){ ?>
+                            <td><?=$item?></td>
+                        <?php }
+                    ?>
                 </tr>
             <?php
             }
